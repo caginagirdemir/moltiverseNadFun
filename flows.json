@@ -1,0 +1,462 @@
+[
+    {
+        "id": "69fc8880ef54b407",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9e0354946b6270ae",
+        "type": "openai",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "api": "",
+        "creds": "a0932ca3a6b445b8",
+        "x": 972,
+        "y": 440,
+        "wires": [
+            [
+                "b5bf1c929d07d92e",
+                "07ec89fa5d3f6ece"
+            ]
+        ]
+    },
+    {
+        "id": "3ba28e8bc780c833",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "promptCreator",
+        "func": "msg.api = 'chat/completions';\nmsg.params = {\n  model: \"gpt-4\",\n  messages: [\n    {\n      role: \"system\",\n      content: \"You generate structured JavaScript objects and strictly follow the requested output format. Do not explain anything.\"\n    },\n    {\n      role: \"user\",\n      content: `\nBelow is a JSON array of crypto projects that received investment.\n\n${JSON.stringify(msg.payload, null, 2)}\n\nSelect EXACTLY 5 different projects.\n\nFor EACH selected project, generate an object in the following format:\n\n{\n  name: \"<PROJECT NAME>\",\n  symbol: \"<SHORT UPPERCASE SYMBOL, 3-6 LETTERS>\",\n  description: \"<SHORT MEME-STYLE DESCRIPTION BASED ON THE PROJECT>\",\n  imagePath: \"png-link\",\n  initialBuy: \"0.0001\",\n  website: \"https://example.com\",\n}\n\nIMPORTANT RULES:\n- Output MUST be a valid JavaScript array\n- Do NOT wrap the output in markdown\n- Do NOT include explanations or comments\n- Return ONLY the array\n`\n    }\n  ],\n  max_tokens: 800,\n  temperature: 0.2\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 784,
+        "y": 440,
+        "wires": [
+            [
+                "9e0354946b6270ae"
+            ]
+        ]
+    },
+    {
+        "id": "3b2f72df641f6710",
+        "type": "http request",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://crypto-fundraising.info/blog/dates-01-07-feb-2026/",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 390,
+        "y": 440,
+        "wires": [
+            [
+                "76de59651c8becbf"
+            ]
+        ]
+    },
+    {
+        "id": "c9a3f4da4bdbeed3",
+        "type": "trigger",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "op1": "1",
+        "op2": "0",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "168",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "hr",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 210,
+        "y": 480,
+        "wires": [
+            [
+                "3b2f72df641f6710"
+            ]
+        ]
+    },
+    {
+        "id": "16e644df136ed243",
+        "type": "inject",
+        "z": "69fc8880ef54b407",
+        "name": "manuelTrig",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 400,
+        "wires": [
+            [
+                "3b2f72df641f6710"
+            ]
+        ]
+    },
+    {
+        "id": "0a0233ebbac927f0",
+        "type": "exec",
+        "z": "69fc8880ef54b407",
+        "command": "node --env-file=/home/cagin/.node-red/nadfun/.env /home/cagin/.node-red/nadfun/nadfun-create.mjs /tmp/nadfun_input.json",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "exec",
+        "x": 838,
+        "y": 714,
+        "wires": [
+            [
+                "7fee14c488d3b7d1"
+            ],
+            [
+                "56bbeda17a723a7c"
+            ],
+            [
+                "56bbeda17a723a7c"
+            ]
+        ]
+    },
+    {
+        "id": "7fee14c488d3b7d1",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "contractParser",
+        "func": "const res = JSON.parse(msg.payload);\n\nmsg.payload = {\n    tokenAddress: res.tokenAddress,\n    poolAddress: res.poolAddress,\n    txHash: res.transactionHash,\n\n    tokenPage: `https://nad.fun/tokens/${res.tokenAddress}`,\n    onChain : `https://monadvision.com/address/${res.tokenAddress}`,\n\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 700,
+        "wires": [
+            [
+                "4ed69975086e776f",
+                "3d678a6fe3641dba"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "76de59651c8becbf",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "parser",
+        "func": "\nlet html = msg.payload || \"\";\n\n\nconst m = html.match(\n  /<div class=\"wrapper article-content\">([\\s\\S]*?)<\\/div>\\s*<div class=\"wrapper sharingblock\">/i\n);\nhtml = m ? m[1] : html; \n\n\nconst regex =\n  /<p class=\"round-header\">([\\s\\S]*?)<\\/p>\\s*<p class=\"project-text\"[\\s\\S]*?>([\\s\\S]*?)<\\/p>/gi;\n\nfunction decode(s) {\n  return (s || \"\")\n    .replace(/&nbsp;/g, \" \")\n    .replace(/&amp;/g, \"&\")\n    .replace(/&#8211;/g, \"–\")\n    .replace(/&#8217;/g, \"’\")\n    .replace(/&#8220;/g, \"“\")\n    .replace(/&#8221;/g, \"”\")\n    .trim();\n}\n\nfunction stripTags(s) {\n  return (s || \"\").replace(/<[^>]*>/g, \"\").trim();\n}\n\nconst projects = [];\nlet match;\n\nwhile ((match = regex.exec(html)) !== null) {\n  const header = match[1];\n  const body = match[2];\n\n  const nameMatch = header.match(/class=\"projtitle\"[^>]*>([^<]+)</i);\n  const project = nameMatch ? decode(nameMatch[1]) : \"\";\n\n  const linkMatch = header.match(/class=\"projtitle\"[^>]*href=\"([^\"]+)\"/i);\n  const website = linkMatch ? linkMatch[1] : \"\";\n\n  const amountMatch = header.match(/raised\\s*<b>([^<]+)<\\/b>/i);\n  const amount = amountMatch ? decode(amountMatch[1]) : \"\";\n\n  let round = \"\";\n  const roundMatch = header.match(/in a\\s*&nbsp;([^<]+?)&nbsp;/i);\n  if (roundMatch) {\n    round = decode(roundMatch[1]).replace(/funding round/i, \"\").trim();\n  } else {\n    const rough = stripTags(decode(header));\n    const r2 = rough.match(/\\b(Series [A-C]|Seed|Pre-seed|Strategic|Public sale|IPO|M&A)\\b/i);\n    if (r2) round = r2[1];\n  }\n\n  const imgMatch = body.match(/<img[^>]+src=\"([^\"]+)\"/i);\n  const image = imgMatch ? imgMatch[1] : \"\";\n\n  let description = stripTags(decode(body));\n  description = description.replace(/\\s+/g, \" \").trim();\n\n  projects.push({\n    project,\n    website,\n    amount,\n    round,\n    image,\n    description,\n  });\n}\n\n\nmsg.payload = projects;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 569,
+        "y": 440,
+        "wires": [
+            [
+                "3ba28e8bc780c833",
+                "d421fe171d10a3f5"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "b5bf1c929d07d92e",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "ARRAYparser",
+        "func": "const text = msg.payload.choices[0].message.content;\n\n// JSON string → JS object\nmsg.payload = JSON.parse(text);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1186,
+        "y": 440,
+        "wires": [
+            [
+                "21021c399b65a992"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "21021c399b65a992",
+        "type": "split",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": "1",
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 230,
+        "y": 660,
+        "wires": [
+            [
+                "c40b6ceaff15a811"
+            ]
+        ]
+    },
+    {
+        "id": "c40b6ceaff15a811",
+        "type": "delay",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 410,
+        "y": 660,
+        "wires": [
+            [
+                "7f1fdee3dd795486",
+                "ac39c4125d194132"
+            ]
+        ]
+    },
+    {
+        "id": "7f1fdee3dd795486",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "tokenDetails",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 610,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "56bbeda17a723a7c",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 997,
+        "y": 783,
+        "wires": [],
+        "icon": "node-red/alert.svg"
+    },
+    {
+        "id": "4ed69975086e776f",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "ContractsDebug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1263,
+        "y": 606,
+        "wires": []
+    },
+    {
+        "id": "3d678a6fe3641dba",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "xTgCreator",
+        "func": "\nconst chatId = 1203828237;\nconst tokenAddress = msg.payload.tokenAddress;\nmsg.payload = {\n    chatId: chatId,\n    type: \"message\",\n    content: `TokenCreated | contractAddress: ${tokenAddress}`\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1259.5,
+        "y": 794,
+        "wires": [
+            [
+                "df9ead056d221118"
+            ]
+        ],
+        "icon": "font-awesome/fa-pencil"
+    },
+    {
+        "id": "df9ead056d221118",
+        "type": "telegram sender",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "bot": "bdba71fa28dd2e2e",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1461.5,
+        "y": 794,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d421fe171d10a3f5",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "newProjectsALL",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 804.5,
+        "y": 367,
+        "wires": []
+    },
+    {
+        "id": "ac39c4125d194132",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "JSONparser",
+        "func": "if (typeof msg.payload === \"object\") msg.payload = JSON.stringify(msg.payload);\nmsg.payload += \"\\n\";\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 606,
+        "y": 720,
+        "wires": [
+            [
+                "47241621126ad5e0"
+            ]
+        ]
+    },
+    {
+        "id": "47241621126ad5e0",
+        "type": "file",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "filename": "/tmp/nadfun_input.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 702.5,
+        "y": 803,
+        "wires": [
+            [
+                "0a0233ebbac927f0"
+            ]
+        ]
+    },
+    {
+        "id": "07ec89fa5d3f6ece",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "AI_Out",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1167.5,
+        "y": 366,
+        "wires": []
+    },
+    {
+        "id": "a0932ca3a6b445b8",
+        "type": "openaiApiKey",
+        "name": "Key"
+    },
+    {
+        "id": "bdba71fa28dd2e2e",
+        "type": "telegram bot",
+        "botname": "NadFunAgentBot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "5e905892e82190e9",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-openai": "1.0.3",
+            "node-red-contrib-telegrambot": "17.0.5"
+        }
+    }
+]
