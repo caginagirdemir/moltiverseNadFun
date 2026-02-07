@@ -54,6 +54,7 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 │ └── flow.png
 └── README.md
 
+
 > ⚠️ **Security Note**  
 > This repository does NOT include:
 > - `flows_cred.json`
@@ -62,6 +63,8 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 > - Telegram bot tokens  
 >
 > These must be provided via environment variables or Node-RED credentials.
+
+---
 
 ## Requirements
 
@@ -76,32 +79,34 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 
 ---
 
-## 1. Install Node-RED
-Access UI: http://<YOUR_PI_IP>:1880
+## Setup Overview
 
-## 2. Import Node-RED Flow
-Option A — Import via UI (recommended)
-Open Node-RED UI
-Menu → Import
-Select Clipboard
-Paste the contents of flows.json
-Import & Deploy
+1. Install Node-RED and access the editor UI  
+2. Import the provided `flows.json` file  
+3. Install required Node-RED nodes and dependencies  
+4. Place `nadfun-create.mjs` in an executable location  
+5. Configure required environment variables  
+6. Run the agent manually or on a weekly schedule  
 
-## 3. Install Required Node-RED Nodes
+---
 
-## 4. Copy nadfun-create.mjs into a known path 
+## Running the Agent
 
-## 5. Environment Variables
-Set required secrets using environment variables, privateKey (wallet which has mon and create tokens) and telegram bot token, and openai api key
+- **Manual run:** use the `manualTrig` node
+- **Automated run:** `trigger 168hr` node (weekly)
 
-## 6. Running the Agent
-Manual run: click manualTrig
-Automated run: trigger 168hr node (weekly)
+The final ranked output is delivered via Telegram.
 
-Disclaimer
-This project is for research and experimentation purposes only.
-Token creation involves financial and legal risk.
+---
+
+## Disclaimer
+
+This project is for research and experimentation purposes only.  
+Token creation involves financial and legal risk.  
 Use at your own discretion.
 
-License
+---
+
+## License
+
 MIT
