@@ -8,8 +8,11 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 
 ---
 
-![image](img/flow.png)
+## Node-RED Flow
 
+![Scout Agent Flow](img/flow.png)
+
+---
 
 ## High-Level Architecture
 
@@ -43,6 +46,13 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 ---
 
 ## Repository Structure
+
+.
+├── flows.json
+├── nadfun-create.mjs
+├── img/
+│ └── flow.png
+└── README.md
 
 > ⚠️ **Security Note**  
 > This repository does NOT include:
