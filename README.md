@@ -45,16 +45,6 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 
 ---
 
-## Repository Structure
-
-.
-├── flows.json
-├── nadfun-create.mjs
-├── img/
-│ └── flow.png
-└── README.md
-
-
 > ⚠️ **Security Note**  
 > This repository does NOT include:
 > - `flows_cred.json`
