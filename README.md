@@ -8,6 +8,9 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 
 ---
 
+![image](img/flow.png)
+
+
 ## High-Level Architecture
 
 1. **Trigger**
