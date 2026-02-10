@@ -8,43 +8,6 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 
 ---
 
-## Node-RED Flow
-
-![Scout Agent Flow](img/flow.png)
-
----
-
-## High-Level Architecture
-
-1. **Trigger**
-   - Manual trigger
-   - Scheduled trigger (every 168 hours / weekly)
-
-2. **Data Collection**
-   - HTTP requests to fetch newly deployed contracts / token data
-   - Raw response parsing and normalization
-
-3. **AI Analysis**
-   - Prompt generation
-   - OpenAI analysis
-   - Ranking & filtering of projects
-
-4. **Post-Processing**
-   - Array splitting & rate limiting
-   - Token-level enrichment
-   - JSON transformation
-
-5. **Token Creation (Optional)**
-   - Uses `nadfun-create.mjs`
-   - Powered by the `nad.fun` npm library
-   - Executed via Node-RED `exec` node
-
-6. **Distribution**
-   - Telegram message creation
-   - Automated Telegram delivery
-
----
-
 > ⚠️ **Security Note**  
 > This repository does NOT include:
 > - `flows_cred.json`
@@ -72,20 +35,11 @@ Optionally, it can **create tokens via nad.fun** using a custom Node.js script.
 ## Setup Overview
 
 1. Install Node-RED and access the editor UI  
-2. Import the provided `flows.json` file  
+2. Import the provided `mainFlows.json` file  
 3. Install required Node-RED nodes and dependencies  
 4. Place `nadfun-create.mjs` in an executable location  
 5. Configure required environment variables  
 6. Run the agent manually or on a weekly schedule  
-
----
-
-## Running the Agent
-
-- **Manual run:** use the `manualTrig` node
-- **Automated run:** `trigger 168hr` node (weekly)
-
-The final ranked output is delivered via Telegram.
 
 ---
 
