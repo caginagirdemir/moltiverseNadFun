@@ -1,0 +1,449 @@
+[
+    {
+        "id": "69fc8880ef54b407",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9e0354946b6270ae",
+        "type": "openai",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "api": "",
+        "creds": "a0932ca3a6b445b8",
+        "x": 1173.9998760223389,
+        "y": 174.00020027160645,
+        "wires": [
+            [
+                "b5bf1c929d07d92e",
+                "07ec89fa5d3f6ece"
+            ]
+        ]
+    },
+    {
+        "id": "3ba28e8bc780c833",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "promptCreator",
+        "func": "msg.api = 'chat/completions';\nmsg.params = {\n  model: \"gpt-4\",\n  messages: [\n    {\n      role: \"system\",\n      content: \"You generate structured JavaScript objects and strictly follow the requested output format. Do not explain anything.\"\n    },\n    {\n      role: \"user\",\n      content: `\nBelow is a JSON array of crypto projects that received investment.\n\n${JSON.stringify(msg.payload, null, 2)}\n\nSelect EXACTLY 5 different projects.\n\nFor EACH selected project, generate an object in the following format:\n\n{\n  name: \"<PROJECT NAME>\",\n  symbol: \"<SHORT UPPERCASE SYMBOL, 3-6 LETTERS>\",\n  description: \"<SHORT MEME-STYLE DESCRIPTION BASED ON THE PROJECT>\",\n  imagePath: \"png-link\",\n  initialBuy: \"0.0001\",\n  website: \"https://example.com\",\n}\n\nIMPORTANT RULES:\n- Output MUST be a valid JavaScript array\n- Do NOT wrap the output in markdown\n- Do NOT include explanations or comments\n- Return ONLY the array\n`\n    }\n  ],\n  max_tokens: 800,\n  temperature: 0.2\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000.0000534057617,
+        "y": 175.00007915496826,
+        "wires": [
+            [
+                "9e0354946b6270ae"
+            ]
+        ]
+    },
+    {
+        "id": "3b2f72df641f6710",
+        "type": "http request",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "Use msg.url",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 434.0000534057617,
+        "y": 173.00009536743164,
+        "wires": [
+            [
+                "d68d800cc18af1d4"
+            ]
+        ]
+    },
+    {
+        "id": "16e644df136ed243",
+        "type": "inject",
+        "z": "69fc8880ef54b407",
+        "name": "Trig",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 83.00000762939453,
+        "y": 173.00004959106445,
+        "wires": [
+            [
+                "344034045d5858ae"
+            ]
+        ]
+    },
+    {
+        "id": "0a0233ebbac927f0",
+        "type": "exec",
+        "z": "69fc8880ef54b407",
+        "command": "node --env-file=/home/cagin/.node-red/nadfun/.env /home/cagin/.node-red/nadfun/nadfun-create.mjs /tmp/nadfun_input.json",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "exec",
+        "x": 2411.000289916992,
+        "y": 184.0001621246338,
+        "wires": [
+            [
+                "7fee14c488d3b7d1"
+            ],
+            [
+                "56bbeda17a723a7c"
+            ],
+            [
+                "56bbeda17a723a7c"
+            ]
+        ]
+    },
+    {
+        "id": "7fee14c488d3b7d1",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "contractParser",
+        "func": "const res = JSON.parse(msg.payload);\nconst input = msg.input || {};\n\nmsg.payload = {\n    tokenName: input.name,\n    tokenSymbol: input.symbol,\n\n    tokenAddress: res.tokenAddress,\n    poolAddress: res.poolAddress,\n    txHash: res.transactionHash,\n\n    tokenPage: `https://nad.fun/tokens/${res.tokenAddress}`,\n    onChain: `https://monadvision.com/address/${res.tokenAddress}`,\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2608.0002975463867,
+        "y": 171.00008010864258,
+        "wires": [
+            [
+                "4ed69975086e776f",
+                "3d678a6fe3641dba"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "76de59651c8becbf",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "parser",
+        "func": "\nlet html = msg.payload || \"\";\n\n\nconst m = html.match(\n  /<div class=\"wrapper article-content\">([\\s\\S]*?)<\\/div>\\s*<div class=\"wrapper sharingblock\">/i\n);\nhtml = m ? m[1] : html; \n\n\nconst regex =\n  /<p class=\"round-header\">([\\s\\S]*?)<\\/p>\\s*<p class=\"project-text\"[\\s\\S]*?>([\\s\\S]*?)<\\/p>/gi;\n\nfunction decode(s) {\n  return (s || \"\")\n    .replace(/&nbsp;/g, \" \")\n    .replace(/&amp;/g, \"&\")\n    .replace(/&#8211;/g, \"–\")\n    .replace(/&#8217;/g, \"’\")\n    .replace(/&#8220;/g, \"“\")\n    .replace(/&#8221;/g, \"”\")\n    .trim();\n}\n\nfunction stripTags(s) {\n  return (s || \"\").replace(/<[^>]*>/g, \"\").trim();\n}\n\nconst projects = [];\nlet match;\n\nwhile ((match = regex.exec(html)) !== null) {\n  const header = match[1];\n  const body = match[2];\n\n  const nameMatch = header.match(/class=\"projtitle\"[^>]*>([^<]+)</i);\n  const project = nameMatch ? decode(nameMatch[1]) : \"\";\n\n  const linkMatch = header.match(/class=\"projtitle\"[^>]*href=\"([^\"]+)\"/i);\n  const website = linkMatch ? linkMatch[1] : \"\";\n\n  const amountMatch = header.match(/raised\\s*<b>([^<]+)<\\/b>/i);\n  const amount = amountMatch ? decode(amountMatch[1]) : \"\";\n\n  let round = \"\";\n  const roundMatch = header.match(/in a\\s*&nbsp;([^<]+?)&nbsp;/i);\n  if (roundMatch) {\n    round = decode(roundMatch[1]).replace(/funding round/i, \"\").trim();\n  } else {\n    const rough = stripTags(decode(header));\n    const r2 = rough.match(/\\b(Series [A-C]|Seed|Pre-seed|Strategic|Public sale|IPO|M&A)\\b/i);\n    if (r2) round = r2[1];\n  }\n\n  const imgMatch = body.match(/<img[^>]+src=\"([^\"]+)\"/i);\n  const image = imgMatch ? imgMatch[1] : \"\";\n\n  let description = stripTags(decode(body));\n  description = description.replace(/\\s+/g, \" \").trim();\n\n  projects.push({\n    project,\n    website,\n    amount,\n    round,\n    image,\n    description,\n  });\n}\n\n\nmsg.payload = projects;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 811.0000610351562,
+        "y": 173.00008010864258,
+        "wires": [
+            [
+                "3ba28e8bc780c833",
+                "d421fe171d10a3f5"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "b5bf1c929d07d92e",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "ARRAYparser",
+        "func": "const text = msg.payload.choices[0].message.content;\n\n// JSON string → JS object\nmsg.payload = JSON.parse(text);\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1356,
+        "y": 180.0002040863037,
+        "wires": [
+            [
+                "21021c399b65a992"
+            ]
+        ],
+        "icon": "node-red/parser-html.svg"
+    },
+    {
+        "id": "21021c399b65a992",
+        "type": "split",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": "1",
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 1549.0002784729004,
+        "y": 183.00018692016602,
+        "wires": [
+            [
+                "c40b6ceaff15a811"
+            ]
+        ]
+    },
+    {
+        "id": "c40b6ceaff15a811",
+        "type": "delay",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1749.0001525878906,
+        "y": 186.00015830993652,
+        "wires": [
+            [
+                "ac39c4125d194132"
+            ]
+        ]
+    },
+    {
+        "id": "56bbeda17a723a7c",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2465.0002975463867,
+        "y": 384.000128030777,
+        "wires": [],
+        "icon": "node-red/alert.svg"
+    },
+    {
+        "id": "4ed69975086e776f",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "ContractsDebug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2871.0003051757812,
+        "y": 122.00009346008301,
+        "wires": []
+    },
+    {
+        "id": "3d678a6fe3641dba",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "xTgCreator",
+        "func": "\nconst chatId = 1203828237;\nconst tokenAddress = msg.payload.tokenAddress;\nmsg.payload = {\n    chatId: chatId,\n    type: \"message\",\n    content: `TokenCreated | contractAddress: ${tokenAddress}`\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2865.5007934570312,
+        "y": 216.0001573562622,
+        "wires": [
+            [
+                "df9ead056d221118"
+            ]
+        ],
+        "icon": "font-awesome/fa-pencil"
+    },
+    {
+        "id": "df9ead056d221118",
+        "type": "telegram sender",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "bot": "bdba71fa28dd2e2e",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 3064.5003051757812,
+        "y": 214.00011253356934,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d421fe171d10a3f5",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "newProjectsALL",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 936.5000610351562,
+        "y": 68.00002479553223,
+        "wires": []
+    },
+    {
+        "id": "ac39c4125d194132",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "JSONparser",
+        "func": "\nmsg.input = msg.payload;  \n\n\nif (typeof msg.payload === \"object\") {\n    msg.payload = JSON.stringify(msg.payload);\n}\n\nmsg.payload += \"\\n\";\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1955.0002822875977,
+        "y": 184.00014686584473,
+        "wires": [
+            [
+                "47241621126ad5e0"
+            ]
+        ]
+    },
+    {
+        "id": "47241621126ad5e0",
+        "type": "file",
+        "z": "69fc8880ef54b407",
+        "name": "",
+        "filename": "/tmp/nadfun_input.json",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 2166.500160217285,
+        "y": 188.00009727478027,
+        "wires": [
+            [
+                "0a0233ebbac927f0"
+            ]
+        ]
+    },
+    {
+        "id": "07ec89fa5d3f6ece",
+        "type": "debug",
+        "z": "69fc8880ef54b407",
+        "name": "AI_Out",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1319.5,
+        "y": 101.00004386901855,
+        "wires": []
+    },
+    {
+        "id": "344034045d5858ae",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "createLink",
+        "func": "// Node-RED Function node\n\ntry {\n  msg = msg || {};\n\n  const now = new Date();\n\n  // Monday-Sunday week\n  const startOfWeek = new Date(now);\n  const day = now.getDay() === 0 ? 7 : now.getDay(); // Mon=1..Sun=7\n  startOfWeek.setHours(0, 0, 0, 0);\n  startOfWeek.setDate(now.getDate() - (day - 1));\n\n  const endOfWeek = new Date(startOfWeek);\n  endOfWeek.setDate(startOfWeek.getDate() + 6);\n\n  const months = [\"jan\",\"feb\",\"mar\",\"apr\",\"may\",\"jun\",\"jul\",\"aug\",\"sep\",\"oct\",\"nov\",\"dec\"];\n  const pad = (n) => String(n).padStart(2, \"0\");\n\n  const startDay = pad(startOfWeek.getDate());\n  const endDay   = pad(endOfWeek.getDate());\n  const month    = months[startOfWeek.getMonth()];\n  const year     = startOfWeek.getFullYear();\n\n  const url = `https://crypto-fundraising.info/blog/dates-${startDay}-${endDay}-${month}-${year}/`;\n\n  msg.url = url;\n  msg.payload = url; // Debug node default olarak payload gösterdiği için\n\n  node.status({ fill: \"green\", shape: \"dot\", text: `${startDay}-${endDay}-${month}-${year}` });\n\n  return msg;\n\n} catch (err) {\n  node.status({ fill: \"red\", shape: \"ring\", text: \"error\" });\n  node.error(err, msg);\n  return null;\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 242.45141983032227,
+        "y": 172.78474807739258,
+        "wires": [
+            [
+                "3b2f72df641f6710"
+            ]
+        ]
+    },
+    {
+        "id": "d68d800cc18af1d4",
+        "type": "function",
+        "z": "69fc8880ef54b407",
+        "name": "pageControl",
+        "func": "const html = (msg.payload || \"\").toString();\nconst code = msg.statusCode;\n\nconst notFoundByStatus = (code === 404);\n\n// Sitedeki tipik 404 mesajları\nconst notFoundByBody =\n  /Oops!\\s*That page can[’']t be found\\./i.test(html) ||\n  /That page can[’']t be found/i.test(html) ||\n  /\\bNothing Found\\b/i.test(html) ||\n  /\\bNot Found\\b/i.test(html);\n\nif (notFoundByStatus || notFoundByBody) {\n  node.status({ fill: \"yellow\", shape: \"ring\", text: \"Page not ready / 404\" });\n  return null; // parser'a geçmesin\n}\n\nnode.status({ fill: \"green\", shape: \"dot\", text: \"Page OK\" });\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 624.4375,
+        "y": 172.90979385375977,
+        "wires": [
+            [
+                "76de59651c8becbf"
+            ]
+        ]
+    },
+    {
+        "id": "a0932ca3a6b445b8",
+        "type": "openaiApiKey",
+        "name": "Key"
+    },
+    {
+        "id": "bdba71fa28dd2e2e",
+        "type": "telegram bot",
+        "botname": "NadFunAgentBot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "3eb2af5c9d6b2890",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-openai": "1.0.3",
+            "node-red-contrib-telegrambot": "17.0.5"
+        }
+    }
+]

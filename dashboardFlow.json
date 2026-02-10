@@ -1,0 +1,586 @@
+[
+    {
+        "id": "28c433ad4e94f65c",
+        "type": "tab",
+        "label": "Dashboard",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "0afca9acfdc6c053",
+        "type": "exec",
+        "z": "28c433ad4e94f65c",
+        "command": "cd /home/cagin/.node-red/nadfun && node nadfun-kpis.mjs",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 610.4514770507812,
+        "y": 400.8090600967407,
+        "wires": [
+            [
+                "f6ae0cf28d3087e3"
+            ],
+            [
+                "c4e80657ee364ad4"
+            ],
+            [
+                "c4e80657ee364ad4"
+            ]
+        ]
+    },
+    {
+        "id": "f6ae0cf28d3087e3",
+        "type": "json",
+        "z": "28c433ad4e94f65c",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 1035.4409255981445,
+        "y": 409.7222385406494,
+        "wires": [
+            [
+                "9fb5c71ae8bcee79",
+                "62d3ce9285c07312",
+                "5e537fca53e8e2c1",
+                "89cff616c6d30578",
+                "b49fb16a09761376",
+                "cb8342e6a6d97565"
+            ]
+        ]
+    },
+    {
+        "id": "c4e80657ee364ad4",
+        "type": "debug",
+        "z": "28c433ad4e94f65c",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1031.4514923095703,
+        "y": 465.16669501953123,
+        "wires": []
+    },
+    {
+        "id": "9fb5c71ae8bcee79",
+        "type": "ui-gauge",
+        "z": "28c433ad4e94f65c",
+        "name": "Total Trades",
+        "group": "a5e909d4364aeedf",
+        "order": 2,
+        "value": "payload.kpis.totalTrades5m",
+        "valueType": "msg",
+        "width": "4",
+        "height": "4",
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Total Trades",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "trades / 5m",
+        "icon": "finance",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "value"
+            },
+            {
+                "from": "30",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "value"
+            },
+            {
+                "from": "100",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "value"
+            }
+        ],
+        "min": 0,
+        "max": "300",
+        "sizeThickness": "24",
+        "sizeGap": "6",
+        "sizeKeyThickness": "12",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1293.4479522705078,
+        "y": 370.4618,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "62d3ce9285c07312",
+        "type": "debug",
+        "z": "28c433ad4e94f65c",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1249.4375762939453,
+        "y": 299.15973701171873,
+        "wires": []
+    },
+    {
+        "id": "10f84f16b4553ef6",
+        "type": "ui-gauge",
+        "z": "28c433ad4e94f65c",
+        "name": "Total Volume",
+        "group": "a5e909d4364aeedf",
+        "order": 4,
+        "value": "payload",
+        "valueType": "msg",
+        "width": "4",
+        "height": "4",
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Total Volume",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "MON / 5m",
+        "icon": "chart-line",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "value"
+            },
+            {
+                "from": "1000",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "value"
+            },
+            {
+                "from": "5000",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "value"
+            }
+        ],
+        "min": 0,
+        "max": "10000",
+        "sizeThickness": "24",
+        "sizeGap": "6",
+        "sizeKeyThickness": "12",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1456.8958282470703,
+        "y": 412.90281105041504,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0fa26934806facc3",
+        "type": "ui-text",
+        "z": "28c433ad4e94f65c",
+        "group": "a5e909d4364aeedf",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 1506.4375762939453,
+        "y": 494.77430057525635,
+        "wires": []
+    },
+    {
+        "id": "5e537fca53e8e2c1",
+        "type": "ui-gauge",
+        "z": "28c433ad4e94f65c",
+        "name": "Total Spike Token",
+        "group": "a5e909d4364aeedf",
+        "order": 3,
+        "value": "payload.kpis.spikeTokenCount5m",
+        "valueType": "msg",
+        "width": "4",
+        "height": "4",
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Total Spike Token",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "token / 5m",
+        "icon": "lightning-bolt",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "value"
+            },
+            {
+                "from": "2",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "value"
+            },
+            {
+                "from": "4",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "value"
+            }
+        ],
+        "min": 0,
+        "max": "10",
+        "sizeThickness": "24",
+        "sizeGap": "6",
+        "sizeKeyThickness": "12",
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 1334.895751953125,
+        "y": 575.9027709960938,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "89cff616c6d30578",
+        "type": "function",
+        "z": "28c433ad4e94f65c",
+        "name": "function 1",
+        "func": "const k = msg.payload.kpis || {};\nconst t = msg.payload.generatedAt;\n\nconst updated = t ? new Date(t).toLocaleString() : \"\";\n\nmsg.payload = `Last Update: ${updated}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1310.4375762939453,
+        "y": 498.90973949432373,
+        "wires": [
+            [
+                "0fa26934806facc3"
+            ]
+        ]
+    },
+    {
+        "id": "fa953707e5d9bd9c",
+        "type": "inject",
+        "z": "28c433ad4e94f65c",
+        "name": "",
+        "props": [],
+        "repeat": "300",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 238.44791412353516,
+        "y": 349.9514560699463,
+        "wires": [
+            [
+                "0afca9acfdc6c053",
+                "a68fae15cad6629b"
+            ]
+        ]
+    },
+    {
+        "id": "b49fb16a09761376",
+        "type": "function",
+        "z": "28c433ad4e94f65c",
+        "name": "function 2",
+        "func": "const v = msg.payload.kpis.totalVolumeMon5m;\n\nmsg.payload = Math.round(v * 10) / 10; \nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1235.4445343017578,
+        "y": 425.89585151367186,
+        "wires": [
+            [
+                "10f84f16b4553ef6"
+            ]
+        ]
+    },
+    {
+        "id": "daee3097d4d00aad",
+        "type": "ui-table",
+        "z": "28c433ad4e94f65c",
+        "group": "4aba9df9707cde9d",
+        "name": "",
+        "label": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "maxrows": 0,
+        "passthru": false,
+        "autocols": true,
+        "showSearch": true,
+        "deselect": true,
+        "selectionType": "none",
+        "columns": [],
+        "mobileBreakpoint": "sm",
+        "mobileBreakpointType": "defaults",
+        "action": "replace",
+        "className": "",
+        "x": 1456.4446563720703,
+        "y": 649.0555572509766,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cb8342e6a6d97565",
+        "type": "function",
+        "z": "28c433ad4e94f65c",
+        "name": "Table Function",
+        "func": "// perToken array -> table payload\nconst data = msg.payload;\n\nfunction shortAddr(a) {\n    if (!a) return \"\";\n    return a.slice(0, 6) + \"…\" + a.slice(-4);\n}\n\nconst tokenMap = flow.get(\"tokenMap\") || {};\n\nfunction tokenLabel(addr) {\n    const a = (addr || \"\").toLowerCase();\n    const sym = tokenMap[a];\n    return sym ? `${shortAddr(addr)} (${sym})` : shortAddr(addr);\n}\n\nmsg.payload = (data.perToken || []).map(t => ({\n    token: tokenLabel(t.token),\n    buy5m: t.buyCount5m ?? 0,\n    sell5m: t.sellCount5m ?? 0,\n    trades5m: t.tradeCount5m ?? 0,\n    volMON5m: Number(t.volumeMon5m ?? 0).toFixed(1),\n    priceMON: (t.priceMonPerToken != null) ? Number(t.priceMonPerToken).toFixed(8) : \"\",\n    deltaPct: (t.deltaPct != null) ? Number(t.deltaPct).toFixed(2) : \"\"\n}));\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1258.4479484558105,
+        "y": 665.0070333480835,
+        "wires": [
+            [
+                "daee3097d4d00aad"
+            ]
+        ]
+    },
+    {
+        "id": "40e871291fa701e9",
+        "type": "ui-button",
+        "z": "28c433ad4e94f65c",
+        "group": "a4908015de45ee64",
+        "name": "",
+        "label": "Update",
+        "order": 1,
+        "width": "2",
+        "height": "1",
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 239.4444465637207,
+        "y": 470.99305152893066,
+        "wires": [
+            [
+                "0afca9acfdc6c053",
+                "a68fae15cad6629b"
+            ]
+        ]
+    },
+    {
+        "id": "a68fae15cad6629b",
+        "type": "file in",
+        "z": "28c433ad4e94f65c",
+        "name": "",
+        "filename": "/home/cagin/.node-red/nadfun/tokens.json",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 577.4375610351562,
+        "y": 477.3993673324585,
+        "wires": [
+            [
+                "586268caac6db7f0"
+            ]
+        ]
+    },
+    {
+        "id": "586268caac6db7f0",
+        "type": "function",
+        "z": "28c433ad4e94f65c",
+        "name": "map",
+        "func": "\nlet arr = msg.payload;\n\nif (typeof arr === \"string\") {\n    arr = JSON.parse(arr);\n}\n\nconst map = {};\nfor (const x of (arr || [])) {\n    if (x.address) map[x.address.toLowerCase()] = x.symbol || \"\";\n}\n\nflow.set(\"tokenMap\", map);\n\nmsg.payload = { loaded: Object.keys(map).length };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 829.4375152587891,
+        "y": 479.9062580078125,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a5e909d4364aeedf",
+        "type": "ui-group",
+        "name": "KPI",
+        "page": "54b43ffd27dcdc62",
+        "width": "12",
+        "height": "9",
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "4aba9df9707cde9d",
+        "type": "ui-group",
+        "name": "Token Track",
+        "page": "54b43ffd27dcdc62",
+        "width": "12",
+        "height": "2",
+        "order": 3,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "a4908015de45ee64",
+        "type": "ui-group",
+        "name": "Commands",
+        "page": "54b43ffd27dcdc62",
+        "width": "12",
+        "height": "1",
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "54b43ffd27dcdc62",
+        "type": "ui-page",
+        "name": "TrackAgent",
+        "ui": "97431c2c5bfe316d",
+        "path": "/trackagent",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "5e8bd6a3e1d68a24",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "97431c2c5bfe316d",
+        "type": "ui-base",
+        "name": "tokentrack",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "5e8bd6a3e1d68a24",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#2e2e2e",
+            "primary": "#0094ce",
+            "bgPage": "#2b2b2b",
+            "groupBg": "#525252",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "e7d9d3e28e63d82c",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]
